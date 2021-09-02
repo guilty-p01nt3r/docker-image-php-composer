@@ -58,6 +58,20 @@ RUN apk add --update php7-xml
 
 ## Sodium PHP Extension
 RUN apk add --update libsodium-dev
+RUN docker-php-ext-install sodium
+
+## Zip PHP Extension
+RUN apk add --update libzip-dev
+RUN docker-php-ext-install zip
+
+## GD PHP Extension
+RUN apk add --update libpng-dev
+RUN docker-php-ext-install gd
+
+## IMAP PHP Extension
+RUN apk add --update imap-dev krb5-dev openssl-dev
+RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl
+RUN docker-php-ext-install imap
 
 RUN \
     adduser --disabled-password --gecos "" $IMAGE_USER && \
@@ -73,7 +87,7 @@ RUN apk add --no-cache $PHPIZE_DEPS \
     && docker-php-ext-enable xdebug
 
 ## Install mysql plugin
-RUN docker-php-ext-install pdo pdo_mysql sodium
+RUN docker-php-ext-install pdo pdo_mysql 
 
 # Set final environment 
 
