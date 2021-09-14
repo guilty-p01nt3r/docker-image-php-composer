@@ -1,11 +1,11 @@
-FROM php:7-fpm-alpine
+FROM php:5.6-fpm-alpine
 
 # Environment variables
 ENV IMAGE_USER=php
 ENV HOME=/home/$IMAGE_USER
 ENV COMPOSER_HOME=$HOME/.composer
 ENV PATH=$HOME/.yarn/bin:$PATH
-ENV PHP_VERSION=7
+ENV PHP_VERSION=5
 
 USER root
 
@@ -25,7 +25,8 @@ RUN php -r "unlink('composer-setup.php');"
 RUN mv composer.phar /usr/local/bin/composer
 
 # Install Node and NPM
-RUN apk add --update nodejs npm
+RUN apk add  --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.10/main/ nodejs=10.24.1-r0
+RUN apk add  --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.10/main/ npm=10.24.1-r0
 
 # Install yarn
 RUN npm install --global yarn
@@ -33,32 +34,33 @@ RUN npm install --global yarn
 # Install PHP Extension for Laravel
 
 ## BCMath PHP Extension
-RUN apk add --update php7-bcmath
+RUN apk add --update php-bcmath
 
 ## Ctype PHP Extension
-RUN apk add --update php7-ctype
+RUN apk add --update php-ctype
 
 ## JSON PHP Extension
-RUN apk add --update php7-json
+RUN apk add --update php-json
 
 ## Mbstring PHP Extension
-RUN apk add --update php7-mbstring
+RUN apk add --update php-mbstring
 
 ## OpenSSL PHP Extension
-RUN apk add --update php7-openssl
+RUN apk add --update php-openssl
 
 ## PDO PHP Extension
-RUN apk add --update php7-pdo
+RUN apk add --update php-pdo
 
 ## Tokenizer PHP Extension
-RUN apk add --update php7-tokenizer
+RUN apk add --update php-tokenizer
 
 ## XML PHP Extension
-RUN apk add --update php7-xml
+RUN apk add --update php-xml
 
 ## Sodium PHP Extension
-RUN apk add --update libsodium-dev
-RUN docker-php-ext-install sodium
+# RUN apk add --update php-sodium libsodium-dev
+# RUN docker-php-ext-configure sodium
+# RUN docker-php-ext-install sodium
 
 ## Zip PHP Extension
 RUN apk add --update libzip-dev
@@ -67,6 +69,9 @@ RUN docker-php-ext-install zip
 ## GD PHP Extension
 RUN apk add --update libpng-dev
 RUN docker-php-ext-install gd
+
+## Bcmath PHP Extension
+RUN docker-php-ext-install bcmath
 
 ## IMAP PHP Extension
 RUN apk add --update imap-dev krb5-dev openssl-dev
@@ -82,14 +87,17 @@ RUN \
     chown -R $IMAGE_USER:$IMAGE_USER /var/www $HOME
 
 ## Xdebug
+RUN pecl channel-update pecl.php.net
 RUN apk add --no-cache $PHPIZE_DEPS \
-    && pecl install xdebug \
+    && pecl install xdebug-2.2.3 \
     && docker-php-ext-enable xdebug
 
 ## Install mysql plugin
 RUN docker-php-ext-install pdo pdo_mysql 
 
 # Set final environment 
+
+RUN echo xdebug.mode=coverage > /usr/local/etc/php/conf.d/xdebug.ini 
 
 USER $IMAGE_USER
 
