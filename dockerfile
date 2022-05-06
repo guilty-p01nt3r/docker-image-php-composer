@@ -76,11 +76,16 @@ RUN docker-php-ext-install pdo pdo_mysql sodium
 
 
 ## Install GD
-#RUN docker-php-ext-install mbstring
-#RUN docker-php-ext-install zip
-# zlib and libpng PHP (necessary to install gd)
+# zlib and libpng (necessary to install gd)
 RUN apk add --update zlib-dev libpng-dev
 RUN docker-php-ext-install gd
+
+## Install zip
+# libzip (necessary to install zip)
+RUN apk add --update libzip-dev
+RUN docker-php-ext-install zip
+
+#RUN docker-php-ext-install mbstring
 
 # Set final environment 
 
