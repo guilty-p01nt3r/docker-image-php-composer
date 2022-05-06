@@ -74,6 +74,14 @@ RUN apk add --no-cache $PHPIZE_DEPS \
 ## Install mysql plugin
 RUN docker-php-ext-install pdo pdo_mysql sodium
 
+
+## Install GD
+#RUN docker-php-ext-install mbstring
+#RUN docker-php-ext-install zip
+# zlib and libpng PHP (necessary to install gd)
+RUN apk add --update zlib-dev libpng-dev
+RUN docker-php-ext-install gd
+
 # Set final environment 
 
 USER $IMAGE_USER
