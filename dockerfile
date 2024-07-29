@@ -1,4 +1,4 @@
-FROM php:8.1-fpm-alpine
+FROM php:8.3-fpm-alpine
 
 # Environment variables
 ENV IMAGE_USER=gu
@@ -13,6 +13,8 @@ WORKDIR /tmp
 
 # Installing Bash
 RUN apk add --no-cache bash
+
+RUN apk add --no-cache --update linux-headers
 
 # Installing git
 RUN apk add --no-cache git
