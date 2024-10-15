@@ -61,6 +61,22 @@ RUN apk add --update php-xml
 ## Sodium PHP Extension
 RUN apk add --update libsodium-dev
 
+# Intl PHP Extension
+RUN apk add --no-cache icu-dev \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install intl \
+    && docker-php-ext-enable intl
+
+# Install iconv PHP Extension
+RUN apk add --no-cache gnu-libiconv \
+    && apk add --no-cache php-iconv
+
+# Install zip PHP Extension
+RUN apk add --no-cache libzip-dev \
+    && docker-php-ext-configure zip \
+    && docker-php-ext-install zip \
+    && docker-php-ext-enable zip
+
 RUN \
     adduser --disabled-password --gecos "" $IMAGE_USER && \
     echo "PATH=$(yarn global bin):$PATH" >> /root/.profile && \
