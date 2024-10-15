@@ -1,4 +1,4 @@
-FROM php:8.1-fpm-alpine
+FROM php:8.3-fpm-alpine
 
 # Environment variables
 ENV IMAGE_USER=gu
@@ -13,6 +13,8 @@ WORKDIR /tmp
 
 # Installing Bash
 RUN apk add --no-cache bash
+
+RUN apk add --no-cache --update linux-headers
 
 # Installing git
 RUN apk add --no-cache git
@@ -58,6 +60,22 @@ RUN apk add --update php-xml
 
 ## Sodium PHP Extension
 RUN apk add --update libsodium-dev
+
+# Intl PHP Extension
+RUN apk add --no-cache icu-dev \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install intl \
+    && docker-php-ext-enable intl
+
+# Install iconv PHP Extension
+RUN apk add --no-cache gnu-libiconv \
+    && apk add --no-cache php-iconv
+
+# Install zip PHP Extension
+RUN apk add --no-cache libzip-dev \
+    && docker-php-ext-configure zip \
+    && docker-php-ext-install zip \
+    && docker-php-ext-enable zip
 
 RUN \
     adduser --disabled-password --gecos "" $IMAGE_USER && \
