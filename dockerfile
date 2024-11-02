@@ -93,6 +93,8 @@ RUN apk add --no-cache $PHPIZE_DEPS \
 ## Install mysql plugin
 RUN docker-php-ext-install pdo pdo_mysql sodium
 
+RUN docker-php-ext-install exif
+
 # Set final environment 
 
 USER $IMAGE_USER
