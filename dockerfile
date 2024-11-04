@@ -93,7 +93,13 @@ RUN apk add --no-cache $PHPIZE_DEPS \
 ## Install mysql plugin
 RUN docker-php-ext-install pdo pdo_mysql sodium
 
+# Install Exif
 RUN docker-php-ext-install exif
+
+# Install Gd
+RUN apk add --no-cache freetype-dev libjpeg-turbo-dev libpng-dev
+RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg
+RUN docker-php-ext-install pdo_mysql exif pcntl bcmath gd
 
 # Set final environment 
 
